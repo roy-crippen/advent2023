@@ -9,6 +9,12 @@ fn main() {
     println!("day02-b = {vb}") // 77607
 }
 
+#[derive(Debug)]
+struct Game {
+    pub id: u32,
+    pub cubes: Vec<(u32, u32, u32)>,
+}
+
 fn solve(games: &Vec<Game>, c: (u32, u32, u32)) -> (u32, u32) {
     let mut va: u32 = 0;
     let mut vb: u32 = 0;
@@ -33,12 +39,6 @@ fn solve(games: &Vec<Game>, c: (u32, u32, u32)) -> (u32, u32) {
     (va, vb)
 }
 
-#[derive(Debug)]
-struct Game {
-    pub id: u32,
-    pub cubes: Vec<(u32, u32, u32)>,
-}
-
 fn parse(ss: &Vec<String>) -> Vec<Game> {
     let mut games: Vec<Game> = Vec::with_capacity(ss.len());
     for (i, s) in ss.iter().enumerate() {
@@ -49,8 +49,8 @@ fn parse(ss: &Vec<String>) -> Vec<Game> {
                 s.split(',')
                     .map(|s| {
                         let vs: Vec<&str> = s.trim().split(' ').collect();
-                        let n = vs.first().unwrap().parse::<u32>().unwrap();
-                        let c = *vs.last().unwrap();
+                        let n = vs[0].parse::<u32>().unwrap();
+                        let c = vs[1];
                         (n, c)
                     })
                     .collect::<Vec<(u32, &str)>>()

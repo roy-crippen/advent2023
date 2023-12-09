@@ -37,9 +37,6 @@ fn parse(ss: &[String]) -> u32 {
                 .collect::<Vec<char>>()
         })
         .filter(|cs| !cs.is_empty())
-        .map(|cs| {
-            cs.first().unwrap().to_digit(10).unwrap() * 10
-                + cs.last().unwrap().to_digit(10).unwrap()
-        })
+        .map(|cs| cs[0].to_digit(10).unwrap() * 10 + cs.last().unwrap().to_digit(10).unwrap())
         .sum()
 }
