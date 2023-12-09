@@ -1,0 +1,20 @@
+[package]
+name = "advent2023"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["crates/*"]
+
+[[bin]]
+name = "day01"
+path =  "crates/day01/src/main.rs"
+
+[[bin]]
+name = "day02"
+path =  "crates/day02/src/main.rs"
+
+[[bin]]
+name = "day03"
+path =  "crates/day03/src/main.rs"
+
