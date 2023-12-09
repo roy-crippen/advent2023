@@ -3,9 +3,9 @@ fn main() {
         .lines()
         .map(|l| l.to_owned())
         .collect();
-    println!("day01-a = {}", parse(&xs)); // 54632
+    println!("day01-a = {}", solve(&xs)); // 54632
     let ys: Vec<String> = xs.iter().map(|x| convert(x)).collect();
-    println!("day01-b = {}", parse(&ys)) // 54019
+    println!("day01-b = {}", solve(&ys)) // 54019
 }
 
 fn convert(in_str: &str) -> String {
@@ -29,7 +29,7 @@ fn convert(in_str: &str) -> String {
         .replace("nine", "9")
 }
 
-fn parse(ss: &[String]) -> u32 {
+fn solve(ss: &[String]) -> u32 {
     ss.iter()
         .map(|s| {
             s.chars()
