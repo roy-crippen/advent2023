@@ -3,9 +3,9 @@ fn main() {
         .lines()
         .map(|l| l.to_owned())
         .collect();
-    println!("day01-a = {}", parse(&xs));
+    println!("day01-a = {}", parse(&xs)); // 54632
     let ys: Vec<String> = xs.iter().map(|x| convert(x)).collect();
-    println!("day01-b = {}", parse(&ys))
+    println!("day01-b = {}", parse(&ys)) // 54019
 }
 
 fn convert(in_str: &str) -> String {
