@@ -1,46 +1,43 @@
 fn main() {
-    let ss: Vec<String> = include_str!("input.txt")
-        .lines()
-        .map(|l| l.to_owned())
-        .collect();
-    let (va, vb) = solve(&ss, 12, 13, 14);
-    println!("day02-a = {va}"); // 2679
-    println!("day02-b = {vb}") // 77607
+    let lines: Vec<String> = include_str!("input.txt").lines().map(|l| l.to_owned()).collect();
+    let (value_a, value_b) = solve(&lines, 12, 13, 14);
+
+    println!("day02-a = {value_a}"); // 2679
+    println!("day02-b = {value_b}") // 77607
 }
 
-fn solve(ss: &[String], nr: u32, ng: u32, nb: u32) -> (u32, u32) {
-    let mut va: u32 = 0;
-    let mut vb: u32 = 0;
-    for (i, s1) in ss.iter().enumerate() {
+/// Solves and return u32 values for both part a and b by parsing `lines`
+fn solve(lines: &[String], nr: u32, ng: u32, nb: u32) -> (u32, u32) {
+    let mut value_a: u32 = 0;
+    let mut value_b: u32 = 0;
+    for (i, line) in lines.iter().enumerate() {
         let mut a_fail = false;
-        let mut mr = 0;
-        let mut mg = 0;
-        let mut mb = 0;
-        for s2 in s1.split_once(':').unwrap().1.split(';') {
-            for s3 in s2.split(',') {
-                let vs: Vec<&str> = s3.trim().split(' ').collect();
-                let n = vs[0].parse::<u32>().unwrap();
-                let c = vs[1];
-                match c {
+        let mut max_count_rgb = (0, 0, 0);
+        for s1 in line.split_once(':').unwrap().1.split(';') {
+            for s2 in s1.split(',') {
+                let vs: Vec<&str> = s2.trim().split(' ').collect();
+                let count = vs[0].parse::<u32>().unwrap();
+                let color = vs[1];
+                match color {
                     "red" => {
-                        mr = mr.max(n);
-                        a_fail = a_fail || n > nr
+                        max_count_rgb.0 = max_count_rgb.0.max(count);
+                        a_fail = a_fail || count > nr
                     }
                     "green" => {
-                        mg = mg.max(n);
-                        a_fail = a_fail || n > ng
+                        max_count_rgb.1 = max_count_rgb.1.max(count);
+                        a_fail = a_fail || count > ng
                     }
                     _ => {
-                        mb = mb.max(n);
-                        a_fail = a_fail || n > nb
+                        max_count_rgb.2 = max_count_rgb.2.max(count);
+                        a_fail = a_fail || count > nb
                     }
                 }
             }
         }
         if !a_fail {
-            va += i as u32 + 1;
+            value_a += i as u32 + 1;
         }
-        vb += mr * mg * mb;
+        value_b += max_count_rgb.0 * max_count_rgb.1 * max_count_rgb.2;
     }
-    (va, vb)
+    (value_a, value_b)
 }

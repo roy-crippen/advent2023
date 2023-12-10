@@ -1,12 +1,9 @@
 use std::collections::HashSet;
 
 fn main() {
-    let mut css: Vec<Vec<char>> = include_str!("input.txt")
-        .lines()
-        .map(|l| l.chars().collect())
-        .collect();
+    let mut css: Vec<Vec<char>> = include_str!("input.txt").lines().map(|l| l.chars().collect()).collect();
 
-    // ring entire 2d-array with '.' for easier indexing when doing neighbor discovery
+    // ring the entire 2d-array with '.' for easier indexing when doing neighbor discovery
     for cs in css.iter_mut() {
         cs.insert(0, '.');
         cs.push('.');
@@ -15,21 +12,22 @@ fn main() {
     css.insert(0, dots.clone());
     css.push(dots);
 
-    let (va, vb) = solve(&css);
-    println!("day03-a = {va}"); // 507214
-    println!("day03-b = {vb}"); // 72553319
+    let (value_a, value_b) = solve(&css);
+    println!("day03-a = {value_a}"); // 507214
+    println!("day03-b = {value_b}"); // 72553319
 }
 
 #[derive(Debug)]
 struct Part {
-    pub val: u32,
+    pub value: u32,
     pub symbol: char,
     pub row: usize,
     pub col: usize,
 }
 
+/// Solves and return u32 values for both part a and b by parsing `css`
 fn solve(css: &Vec<Vec<char>>) -> (u32, u32) {
-    let mut va = 0;
+    let mut value_a = 0;
     let mut parts: Vec<Part> = Vec::new();
     for i in 1..css.len() {
         let mut j_start = usize::MAX;
@@ -44,7 +42,7 @@ fn solve(css: &Vec<Vec<char>>) -> (u32, u32) {
                 }
             } else if j_start != usize::MAX {
                 if let Some(part) = get_part(css, i, j_start, j_end) {
-                    va += part.val;
+                    value_a += part.value;
                     if part.symbol == '*' {
                         parts.push(part);
                     }
@@ -55,33 +53,34 @@ fn solve(css: &Vec<Vec<char>>) -> (u32, u32) {
         }
     }
 
-    // now calculate part b value
-    let mut vb = 0;
+    // now calculate part b value from the list of parts
+    let mut value_b = 0;
     for (i, part) in parts.iter().enumerate() {
-        let mut v = part.val;
+        let mut v = part.value;
         let mut cnt = 0;
         let js = i + 1..parts.len();
         for j in js {
             if part.col == parts[j].col && part.row == parts[j].row {
                 cnt += 1;
-                v *= parts[j].val
+                v *= parts[j].value
             }
         }
         if cnt > 0 {
-            vb += v;
+            value_b += v;
         }
     }
 
-    (va, vb)
+    (value_a, value_b)
 }
 
-fn get_part(ss: &[Vec<char>], i: usize, j_start: usize, j_end: usize) -> Option<Part> {
+/// Create a Part if one exists on row `i` from col `j_start` to `j_end` from data in `css`
+fn get_part(css: &[Vec<char>], i: usize, j_start: usize, j_end: usize) -> Option<Part> {
     let mut ns = HashSet::new();
     let rs = i - 1..=i + 1;
     for r in rs {
         for j in j_start..=j_end {
             for c in j - 1..=j + 1 {
-                let ch: char = ss[r][c];
+                let ch: char = css[r][c];
                 if !ch.is_ascii_digit() && ch != '.' {
                     ns.insert((ch, r, c));
                 }
@@ -90,19 +89,9 @@ fn get_part(ss: &[Vec<char>], i: usize, j_start: usize, j_end: usize) -> Option<
     }
 
     if ns.len() == 1 {
-        let val = ss[i][j_start..=j_end]
-            .iter()
-            .collect::<String>()
-            .parse::<u32>()
-            .unwrap();
+        let val = css[i][j_start..=j_end].iter().collect::<String>().parse::<u32>().unwrap();
         let (symbol, row, col) = ns.iter().collect::<Vec<_>>()[0];
-        let part = Part {
-            val,
-            symbol: *symbol,
-            row: *row,
-            col: *col,
-        };
-        return Some(part);
+        return Some(Part { value: val, symbol: *symbol, row: *row, col: *col });
     }
     None
 }

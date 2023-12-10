@@ -1,13 +1,12 @@
 fn main() {
-    let xs: Vec<String> = include_str!("input.txt")
-        .lines()
-        .map(|l| l.to_owned())
-        .collect();
-    println!("day01-a = {}", solve(&xs)); // 54632
-    let ys: Vec<String> = xs.iter().map(|x| convert(x)).collect();
-    println!("day01-b = {}", solve(&ys)) // 54019
+    let lines: Vec<String> = include_str!("input.txt").lines().map(|l| l.to_owned()).collect();
+    println!("day01-a = {}", solve(&lines)); // 54632
+
+    let converted_lines: Vec<String> = lines.iter().map(|x| convert(x)).collect();
+    println!("day01-b = {}", solve(&converted_lines)) // 54019
 }
 
+/// Converts a written number `one` to `nine` with numbers `1` to `9`
 fn convert(in_str: &str) -> String {
     in_str
         .to_string()
@@ -29,13 +28,11 @@ fn convert(in_str: &str) -> String {
         .replace("nine", "9")
 }
 
-fn solve(ss: &[String]) -> u32 {
-    ss.iter()
-        .map(|s| {
-            s.chars()
-                .filter(|c| c.is_ascii_digit())
-                .collect::<Vec<char>>()
-        })
+/// Sum of 2 digit numbers created from first and last digit found in each line of `lines`
+fn solve(lines: &[String]) -> u32 {
+    lines
+        .iter()
+        .map(|s| s.chars().filter(|c| c.is_ascii_digit()).collect::<Vec<char>>())
         .filter(|cs| !cs.is_empty())
         .map(|cs| cs[0].to_digit(10).unwrap() * 10 + cs.last().unwrap().to_digit(10).unwrap())
         .sum()
