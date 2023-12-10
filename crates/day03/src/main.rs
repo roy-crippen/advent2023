@@ -5,6 +5,8 @@ fn main() {
         .lines()
         .map(|l| l.chars().collect())
         .collect();
+
+    // ring entire 2d-array with '.' for easier indexing when doing neighbor discovery
     for cs in css.iter_mut() {
         cs.insert(0, '.');
         cs.push('.');
@@ -12,6 +14,7 @@ fn main() {
     let dots: Vec<char> = ".".repeat(css[0].len()).chars().collect();
     css.insert(0, dots.clone());
     css.push(dots);
+
     let (va, vb) = solve(&css);
     println!("day03-a = {va}"); // 507214
     println!("day03-b = {vb}"); // 72553319
@@ -51,6 +54,8 @@ fn solve(css: &Vec<Vec<char>>) -> (u32, u32) {
             }
         }
     }
+
+    // now calculate part b value
     let mut vb = 0;
     for (i, part) in parts.iter().enumerate() {
         let mut v = part.val;
@@ -66,6 +71,7 @@ fn solve(css: &Vec<Vec<char>>) -> (u32, u32) {
             vb += v;
         }
     }
+
     (va, vb)
 }
 
