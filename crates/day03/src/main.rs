@@ -89,9 +89,9 @@ fn get_part(css: &[Vec<char>], i: usize, j_start: usize, j_end: usize) -> Option
     }
 
     if ns.len() == 1 {
-        let val = css[i][j_start..=j_end].iter().collect::<String>().parse::<u32>().unwrap();
+        let value = css[i][j_start..=j_end].iter().collect::<String>().parse::<u32>().unwrap();
         let (symbol, row, col) = ns.iter().collect::<Vec<_>>()[0];
-        return Some(Part { value: val, symbol: *symbol, row: *row, col: *col });
+        return Some(Part { value, symbol: *symbol, row: *row, col: *col });
     }
     None
 }
