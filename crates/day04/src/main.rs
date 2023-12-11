@@ -1,46 +1,62 @@
 fn main() {
     let lines: Vec<String> = include_str!("input.txt").lines().map(|l| l.to_owned()).collect();
-    let cards = parse(&lines);
-    // for card in &cards {
-    //     println!("{card:?}")
-    // }
+    let mut cards = parse(&lines);
 
-    println!("day01-a = {}", solve_a(&cards)); // 54632
+    println!("day04-a = {}", solve_a(&cards)); // 25010
+    println!("day04-b = {}", solve_b(&mut cards)); // 9924412
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Card {
-    pub id: u32,
-    pub wins: Vec<u32>,
-    pub attempts: Vec<u32>,
+    id: usize,
+    win_cnt: usize,
+    copies: usize,
 }
 
-fn solve_a(cards: &[Card]) -> u32 {
-    let get_value = |card: &Card| -> u32 {
-        let cnt: u32 = card.attempts.iter().map(|v| if card.wins.contains(v) { 1 } else { 0 }).sum();
-        if cnt == 0 {
-            return 0;
+/// Find part 1 solution from the list of cards
+fn solve_a(cards: &[Card]) -> usize {
+    cards
+        .iter()
+        .map(|card| {
+            if card.win_cnt == 0 {
+                0
+            } else {
+                2usize.pow(card.win_cnt as u32 - 1)
+            }
+        })
+        .sum()
+}
+
+/// Find part 2 solution from the list of cards
+fn solve_b(cards: &mut [Card]) -> usize {
+    let ids: Vec<usize> = cards.iter().map(|card| card.id).collect();
+    for id in ids {
+        let end = cards[id - 1].win_cnt + id;
+        for i in id..end {
+            if i < cards.len() {
+                cards[i].copies += cards[id - 1].copies;
+            }
         }
-        2u32.pow(cnt - 1)
-    };
-    cards.iter().map(get_value).sum()
+    }
+    cards.iter().map(|card| card.copies).sum()
 }
 
 /// Parse input `lines` to create a list of Cards
 fn parse(lines: &[String]) -> Vec<Card> {
-    let get_vals = |in_str: &str| -> Vec<u32> {
+    let get_vals = |in_str: &str| -> Vec<usize> {
         in_str
             .split(' ')
             .filter(|s| !s.is_empty())
-            .map(|s| s.trim().parse::<u32>().unwrap_or(0u32))
+            .map(|s| s.trim().parse::<usize>().unwrap_or(0usize))
             .collect()
     };
     let mut cards: Vec<Card> = Vec::new();
-    for (i, line) in lines.iter().enumerate() {
+    for (id, line) in lines.iter().enumerate() {
         let xs: Vec<&str> = line.split_once(':').unwrap().1.split('|').map(|s| s.trim()).collect();
-        let wins: Vec<u32> = get_vals(xs[0]);
-        let attempts: Vec<u32> = get_vals(xs[1]);
-        cards.push(Card { id: i as u32 + 1, wins, attempts })
+        let winners: Vec<usize> = get_vals(xs[0]);
+        let attempts: Vec<usize> = get_vals(xs[1]);
+        let win_cnt = attempts.iter().map(|v| if winners.contains(v) { 1 } else { 0 }).sum();
+        cards.push(Card { id: id + 1, win_cnt, copies: 1 });
     }
     cards
 }
