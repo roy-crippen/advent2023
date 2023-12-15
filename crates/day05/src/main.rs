@@ -49,7 +49,7 @@ fn solve(_seeds: &[(usize, usize)], mss: &Vec<Vec<Map>>) -> usize {
                         seeds.push((end_overlap, end_seed));
                     }
 
-                    // we get here we handled the overlap
+                    // we handled the overlap, no more to do on this map
                     has_no_overlap = false;
                     break;
                 }
