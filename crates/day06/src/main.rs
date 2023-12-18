@@ -18,7 +18,7 @@ fn get_beat_record_cnt(end_t: usize, record: usize) -> usize {
     last - first + 1
 }
 
-fn solve_a(xs: &Vec<(usize, usize)>) -> usize {
+fn solve_a(xs: &[(usize, usize)]) -> usize {
     xs.iter().map(|(end_t, record)| get_beat_record_cnt(*end_t, *record)).product()
 }
 
@@ -40,7 +40,7 @@ fn parse(lines: &[String]) -> Vec<(usize, usize)> {
     xs
 }
 
-fn get_race(xs: &Vec<(usize, usize)>) -> (usize, usize) {
+fn get_race(xs: &[(usize, usize)]) -> (usize, usize) {
     let (s1, s2) = xs
         .iter()
         .map(|(u1, u2)| (u1.to_string(), u2.to_string()))
