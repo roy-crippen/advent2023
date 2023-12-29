@@ -30,15 +30,15 @@ fn solve(_seeds: &[(usize, usize)], mss: &Vec<Vec<Map>>) -> usize {
         while let Some((start_seed, end_seed)) = seeds.pop() {
             // apply each map to the current seed
             let mut has_no_overlap = true;
-            for m in ms {
+            for &Map { s_start, d_start, len } in ms {
                 // find the overlap for this map
-                let start_overlap = start_seed.max(m.s_start);
-                let end_overlap = end_seed.min(m.s_start + m.len);
+                let start_overlap = start_seed.max(s_start);
+                let end_overlap = end_seed.min(s_start + len);
 
                 // mutate new_seed and seed if there is overlap
                 if start_overlap < end_overlap {
-                    let new_start = m.d_start + start_overlap - m.s_start;
-                    let new_end = m.d_start + end_overlap - m.s_start;
+                    let new_start = d_start + start_overlap - s_start;
+                    let new_end = d_start + end_overlap - s_start;
                     new_seeds.push((new_start, new_end));
 
                     if start_seed < start_overlap {
