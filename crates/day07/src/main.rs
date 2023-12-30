@@ -3,6 +3,7 @@ fn main() {
     let hands = parse(&lines);
 
     println!("day07-a = {}", solve_a(&hands)); // 256448566
+    println!("day07-b = {}", solve_b(&hands)); // 254412181
 }
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
@@ -24,7 +25,58 @@ struct Hand {
 }
 
 fn solve_a(_hands: &[Hand]) -> usize {
+    let hands: Vec<Hand> = _hands.to_vec();
+    finish(hands)
+}
+
+fn solve_b(_hands: &[Hand]) -> usize {
     let mut hands: Vec<Hand> = _hands.to_vec();
+
+    for hand in hands.iter_mut() {
+        // mutate 'J' card value from 11 to 1
+        hand.cards = hand.cards.iter().map(|card| if *card == 11 { 1 } else { *card }).collect();
+
+        // update HandType
+        let joker_cnt = hand.cards.iter().filter(|card| **card == 1).count();
+        match hand.hand_type {
+            HandType::FiveKind => (),
+            HandType::FourKind => {
+                if joker_cnt == 1 || joker_cnt == 4 {
+                    hand.hand_type = HandType::FiveKind
+                }
+            }
+            HandType::FullHouse => {
+                if joker_cnt > 0 {
+                    hand.hand_type = HandType::FiveKind
+                }
+            }
+            HandType::ThreeKind => {
+                if joker_cnt == 3 || joker_cnt == 1 {
+                    hand.hand_type = HandType::FourKind
+                }
+            }
+            HandType::TwoPair => match joker_cnt {
+                1 => hand.hand_type = HandType::FullHouse,
+                2 => hand.hand_type = HandType::FourKind,
+                _ => (),
+            },
+            HandType::OnePair => {
+                if joker_cnt == 1 || joker_cnt == 2 {
+                    hand.hand_type = HandType::ThreeKind
+                }
+            }
+            HandType::HighCard => {
+                if joker_cnt == 1 {
+                    hand.hand_type = HandType::OnePair
+                }
+            }
+        }
+    }
+
+    finish(hands)
+}
+
+fn finish(mut hands: Vec<Hand>) -> usize {
     hands.sort_by(|a, b| {
         a.hand_type
             .cmp(&b.hand_type)
