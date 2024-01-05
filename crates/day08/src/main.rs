@@ -3,8 +3,8 @@ use std::collections::HashMap;
 fn main() {
     let lines: Vec<String> = include_str!("input.txt").lines().map(|l| l.to_owned()).collect();
     let map = parse(&lines);
-
-    println!("day08-a = {}", solve_a(&map)); // 16897
+    println!("day08-a = {}", solve('a', "AAA", &map)); // 16897
+    println!("day08-b = {}", solve_b(&map)); // 16563603485021
 }
 
 struct Map {
@@ -12,21 +12,55 @@ struct Map {
     rev_instructions: String,
 }
 
-fn solve_a(map: &Map) -> usize {
-    let mut current_key = "AAA";
+fn solve(part: char, start_key: &str, map: &Map) -> usize {
+    let mut current_key = start_key;
     let mut rev_instructions: String = map.rev_instructions.clone();
     let mut steps = 0;
     loop {
         steps += 1;
+        // get more instructions if needed
         if rev_instructions.is_empty() {
             rev_instructions = map.rev_instructions.clone();
         }
+
+        // set the current_key based on the next instruction
         let (l_key, r_key) = map.m.get(current_key).unwrap();
         current_key = if rev_instructions.pop().unwrap().eq(&'L') { l_key } else { r_key };
-        if current_key.eq("ZZZ") {
+
+        // check for end condition for part a or b
+        if (current_key.eq("ZZZ") && part.eq(&'a')) || (current_key.ends_with('Z') && part.eq(&'b')) {
             return steps;
         }
     }
+}
+
+fn solve_b(map: &Map) -> usize {
+    // find the solution count for each key ending in 'A'
+    let solutions: Vec<usize> = map.m.keys().filter(|key| key.ends_with('A')).map(|key| solve('b', key, map)).collect();
+
+    // return the least common multiple of the list of solutions
+    assert!(solutions.len() > 1);
+    solutions.iter().skip(2).fold(lcm(solutions[0], solutions[1]), |acc, v| lcm(acc, *v))
+}
+
+// https://rustp.org/number-theory/lcm/
+fn gcd(mut a: usize, mut b: usize) -> usize {
+    if a == b {
+        return a;
+    }
+    if b > a {
+        std::mem::swap(&mut a, &mut b);
+    }
+    while b > 0 {
+        let temp = a;
+        a = b;
+        b = temp % b;
+    }
+    a
+}
+
+fn lcm(a: usize, b: usize) -> usize {
+    a * (b / gcd(a, b))
 }
 
 fn parse(lines: &[String]) -> Map {
