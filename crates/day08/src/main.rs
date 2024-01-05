@@ -22,11 +22,7 @@ fn solve_a(map: &Map) -> usize {
             rev_instructions = map.rev_instructions.clone();
         }
         let (l_key, r_key) = map.m.get(current_key).unwrap();
-        if rev_instructions.pop().unwrap().eq(&'L') {
-            current_key = l_key;
-        } else {
-            current_key = r_key;
-        }
+        current_key = if rev_instructions.pop().unwrap().eq(&'L') { l_key } else { r_key };
         if current_key.eq("ZZZ") {
             return steps;
         }
