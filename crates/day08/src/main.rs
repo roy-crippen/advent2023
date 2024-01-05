@@ -36,7 +36,7 @@ fn solve_a(map: &Map) -> usize {
 fn parse(lines: &[String]) -> Map {
     assert!(lines.len() > 2);
     let mut it = lines.iter();
-    let is = it.next().unwrap().chars().rev().collect();
+    let rev_instructions = it.next().unwrap().chars().rev().collect();
     it.next();
     let mut m: HashMap<String, (String, String)> = HashMap::new();
     for line in it {
@@ -45,5 +45,5 @@ fn parse(lines: &[String]) -> Map {
         m.insert(key.trim().to_string(), (ls.trim()[1..].to_string(), rs.trim()[..rs.trim().len() - 1].to_string()));
     }
 
-    Map { m, rev_instructions: is }
+    Map { m, rev_instructions }
 }
