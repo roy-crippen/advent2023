@@ -42,7 +42,9 @@ fn parse(lines: &[String]) -> Map {
     for line in it {
         let (key, s) = line.split_once('=').unwrap();
         let (ls, rs) = s.split_once(',').unwrap();
-        m.insert(key.trim().to_string(), (ls.trim()[1..].to_string(), rs.trim()[..rs.trim().len() - 1].to_string()));
+        let ls = ls.trim();
+        let rs = rs.trim();
+        m.insert(key.trim().to_string(), (ls[1..].to_string(), rs[..rs.len() - 1].to_string()));
     }
 
     Map { m, rev_instructions }
