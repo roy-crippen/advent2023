@@ -25,7 +25,7 @@ fn diff(xs: Vec<isize>, part: char) -> isize {
         ys.push(xs[i] - xs[i - 1]);
     }
     if part.eq(&'a') {
-        *xs.last().unwrap() + crate::diff(ys, part)
+        *xs.last().unwrap() + diff(ys, part)
     } else {
         -xs[0] - diff(ys, part)
     }
