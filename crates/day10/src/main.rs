@@ -63,7 +63,7 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir) {
                 }
 
                 // check south
-                if row <= css.len() - 1 {
+                if row < css.len() {
                     let s = css[row + 1][col];
                     if s.eq(&'|') || s.eq(&'L') || s.eq(&'J') {
                         return (row + 1, col, Dir::S);
