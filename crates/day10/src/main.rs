@@ -20,12 +20,6 @@ fn solve_a(css: &Vec<Vec<char>>) -> usize {
     assert!(!css[0].is_empty());
 
     let (mut row, mut col, mut dir) = find_start_pos(css);
-    match dir {
-        Dir::N => row -= 1,
-        Dir::S => row += 1,
-        Dir::E => col += 1,
-        _ => col -= 1,
-    }
     let mut steps: usize = 0;
     while dir != Dir::Done {
         steps += 1;
@@ -64,7 +58,7 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir) {
                 if row > 0 {
                     let n = css[row - 1][col];
                     if n.eq(&'|') || n.eq(&'7') || n.eq(&'F') {
-                        return (row, col, Dir::N);
+                        return (row - 1, col, Dir::N);
                     }
                 }
 
@@ -72,7 +66,7 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir) {
                 if row <= css.len() - 1 {
                     let s = css[row + 1][col];
                     if s.eq(&'|') || s.eq(&'L') || s.eq(&'J') {
-                        return (row, col, Dir::S);
+                        return (row + 1, col, Dir::S);
                     }
                 }
 
@@ -80,14 +74,14 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir) {
                 if col > 0 {
                     let e = css[row][col - 1];
                     if e.eq(&'-') || e.eq(&'J') || e.eq(&'7') {
-                        return (row, col, Dir::E);
+                        return (row, col - 1, Dir::E);
                     }
                 }
 
                 // must be west
-                return (row, col, Dir::W);
+                return (row, col + 1, Dir::W);
             }
         }
     }
-    panic!("failed to find s")
+    panic!("failed to find 'S'")
 }
