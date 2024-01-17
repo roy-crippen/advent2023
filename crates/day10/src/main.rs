@@ -130,7 +130,8 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir, char) {
                     dir = Dir::W
                 }
 
-                let ch = match nsew {
+                // find replacement char for 'S'
+                let s_ch = match nsew {
                     (Some(Dir::N), Some(Dir::S), None, None) => '|',
                     (None, None, Some(Dir::E), Some(Dir::W)) => '-',
                     (Some(Dir::N), None, Some(Dir::E), None) => 'L',
@@ -139,7 +140,7 @@ fn find_start_pos(css: &Vec<Vec<char>>) -> (usize, usize, Dir, char) {
                     (None, Some(Dir::S), Some(Dir::E), None) => 'F',
                     _ => panic!("'S' had invalid neighbors"),
                 };
-                return (row, col, dir, ch);
+                return (row, col, dir, s_ch);
             }
         }
     }
