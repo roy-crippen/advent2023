@@ -5,6 +5,7 @@ fn main() {
     println!("day11-a = {}", solve_a(&xss)); // 9556896
 }
 
+#[allow(clippy::ptr_arg)]
 fn solve_a(_xss: &Vec<Vec<char>>) -> usize {
     let mut xss = _xss.clone();
     expand_grid(&mut xss);
@@ -16,11 +17,10 @@ fn solve_a(_xss: &Vec<Vec<char>>) -> usize {
             }
         }
     }
+    
     let mut tot: usize = 0;
-    for i in 0..zs.len() {
-        let v1 = zs[i];
-        for j in i + 1..zs.len() {
-            let v2 = zs[j];
+    for (i, v1) in zs.iter().enumerate() {
+        for v2 in zs.iter().skip(i) {
             let r_tot = if v2.0 > v1.0 { v2.0 - v1.0 } else { v1.0 - v2.0 };
             let c_tot = if v2.1 > v1.1 { v2.1 - v1.1 } else { v1.1 - v2.1 };
             tot += r_tot + c_tot
